@@ -1,0 +1,19 @@
+{
+  "name": "pulsegram",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pulsegram — modern social media platform (com.gram.pulse)",
+  "scripts": {
+    "dev": "npm run dev --workspace=@pulsegram/web",
+    "build": "npm run build --workspace=@pulsegram/web",
+    "start": "npm run start --workspace=@pulsegram/web",
+    "lint": "npm run lint --workspace=@pulsegram/web"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}
