@@ -1,0 +1,60 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    function isVideo() {
+      return request.resource.contentType.matches('video/.*');
+    }
+
+    function underSize(maxBytes) {
+      return request.resource.size < maxBytes;
+    }
+
+    // Profile avatars — 5MB images
+    match /users/{uid}/avatar/{fileName} {
+      allow read: if true;
+      allow write: if isOwner(uid) && isImage() && underSize(5 * 1024 * 1024);
+    }
+
+    // Posts — 15MB images / 100MB videos
+    match /users/{uid}/posts/{fileName} {
+      allow read: if true;
+      allow write: if isOwner(uid) && (
+        (isImage() && underSize(15 * 1024 * 1024)) ||
+        (isVideo() && underSize(100 * 1024 * 1024))
+      );
+    }
+
+    // Stories — 10MB images / 50MB videos
+    match /users/{uid}/stories/{fileName} {
+      allow read: if true;
+      allow write: if isOwner(uid) && (
+        (isImage() && underSize(10 * 1024 * 1024)) ||
+        (isVideo() && underSize(50 * 1024 * 1024))
+      );
+    }
+
+    // Reels — 100MB videos
+    match /users/{uid}/reels/{fileName} {
+      allow read: if true;
+      allow write: if isOwner(uid) && isVideo() && underSize(100 * 1024 * 1024);
+    }
+
+    // Chat attachments
+    match /users/{uid}/chat/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(uid) && underSize(25 * 1024 * 1024);
+    }
+  }
+}
