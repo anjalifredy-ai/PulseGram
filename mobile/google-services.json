@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "225740234992",
+    "firebase_url": "https://viewtube-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "viewtube-v2",
+    "storage_bucket": "viewtube-v2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225740234992:android:fe40e6b013f7c8ff5ee235",
+        "android_client_info": {
+          "package_name": "com.gram.pulse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225740234992-f1lr0gucd5ktb3vu26ee06no1et0hhmd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwGJ6sr5yS-Chqkuk1gA9BdkRdeMlhxsM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225740234992-f1lr0gucd5ktb3vu26ee06no1et0hhmd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
