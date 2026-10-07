@@ -35,7 +35,7 @@ service cloud.firestore {
     match /posts/{postId} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
-      allow update: if isOwner(resource.data.authorId) || isAdmin();
+      allow update: if isSignedIn(); // likesCount etc via client; tighten with Cloud Functions later
       allow delete: if isOwner(resource.data.authorId) || isAdmin();
     }
 
@@ -43,14 +43,22 @@ service cloud.firestore {
     match /stories/{storyId} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
-      allow update, delete: if isOwner(resource.data.authorId) || isAdmin();
+      allow update: if isSignedIn();
+      allow delete: if isOwner(resource.data.authorId) || isAdmin();
+    }
+
+    // Story views
+    match /storyViews/{viewId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.viewerId == request.auth.uid;
     }
 
     // Reels
     match /reels/{reelId} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
-      allow update, delete: if isOwner(resource.data.authorId) || isAdmin();
+      allow update: if isSignedIn();
+      allow delete: if isOwner(resource.data.authorId) || isAdmin();
     }
 
     // Likes
@@ -71,6 +79,10 @@ service cloud.firestore {
     match /follows/{followId} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.followerId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        resource.data.followerId == request.auth.uid ||
+        resource.data.followingId == request.auth.uid
+      );
       allow delete: if isSignedIn() && (
         resource.data.followerId == request.auth.uid ||
         resource.data.followingId == request.auth.uid
@@ -100,7 +112,7 @@ service cloud.firestore {
       }
     }
 
-    // Calls
+    // Calls + signaling subcollection
     match /calls/{callId} {
       allow read, write: if isSignedIn() && (
         request.auth.uid == resource.data.callerId ||
@@ -110,6 +122,10 @@ service cloud.firestore {
           request.auth.uid == request.resource.data.calleeId
         ))
       );
+
+      match /signaling/{signalId} {
+        allow read, write: if isSignedIn();
+      }
     }
 
     // Saved
